@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  
+jobs:
+  rubocop:
+      name: Rubocop
+      runs-on: ubuntu-18.04
+      steps:
+        - uses: actions/checkout@v1
+        - uses: actions/setup-ruby@v1
+          with:
+            ruby-version: 2.7.2
+        - name: Install Rubocop
+          run: |
+            gem install rubocop
+            gem install rubocop-rails
+            gem install rubocop-rspec
+        - name: Run Rubocop
+          run: rubocop
+  rspec:
+    name: Rspec
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install
+      - name: Run Migrations
+        run: bundle exec rails db:create db:migrate RAILS_ENV=test
+      - name: Run Rspec
+        run: bundle exec rspec
