@@ -1,51 +1,58 @@
-class Api::V1::BeersController < ApplicationController
-  before_action :set_beer, only: [:show, :update, :destroy]
+# frozen_string_literal: true
 
-  # GET /beers
-  def index
-    @beers = Beer.all
+module Api
+  module V1
+    class BeersController < ApplicationController
+      before_action :set_beer, only: %i[show update destroy]
 
-    render json: @beers
-  end
+      # GET /beers
+      def index
+        @beers = Beer.all
 
-  # GET /beers/1
-  def show
-    render json: @beer
-  end
+        render json: @beers
+      end
 
-  # POST /beers
-  def create
-    @beer = Beer.new(beer_params)
+      # GET /beers/1
+      def show
+        render json: @beer
+      end
 
-    if @beer.save
-      render json: @beer, status: :created, location: api_v1_beers_url(@beer)
-    else
-      render json: @beer.errors, status: :unprocessable_entity
+      # POST /beers
+      def create
+        @beer = Beer.new(beer_params)
+
+        if @beer.save
+          render json: @beer, status: :created, location: api_v1_beers_url(@beer)
+        else
+          render json: @beer.errors, status: :unprocessable_entity
+        end
+      end
+
+      # PATCH/PUT /beers/1
+      def update
+        if @beer.update(beer_params)
+          render json: @beer
+        else
+          render json: @beer.errors, status: :unprocessable_entity
+        end
+      end
+
+      # DELETE /beers/1
+      def destroy
+        @beer.destroy
+      end
+
+      private
+
+      # Use callbacks to share common setup or constraints between actions.
+      def set_beer
+        @beer = Beer.find(params[:id])
+      end
+
+      # Only allow a list of trusted parameters through.
+      def beer_params
+        params.require(:beer).permit(:name, :rating, :style_id)
+      end
     end
   end
-
-  # PATCH/PUT /beers/1
-  def update
-    if @beer.update(beer_params)
-      render json: @beer
-    else
-      render json: @beer.errors, status: :unprocessable_entity
-    end
-  end
-
-  # DELETE /beers/1
-  def destroy
-    @beer.destroy
-  end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_beer
-      @beer = Beer.find(params[:id])
-    end
-
-    # Only allow a list of trusted parameters through.
-    def beer_params
-      params.require(:beer).permit(:name, :rating, :style_id)
-    end
 end
