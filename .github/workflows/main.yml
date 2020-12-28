@@ -24,6 +24,7 @@ jobs:
         - name: Run Rubocop
           run: rubocop
   rspec:
+    name: Rspec
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
