@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  
+jobs:
+  rspec:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Install Dependencies
+        run: bundle install
+
+      - name: Run Migrations
+        run: bundle exec rails db:create db:migrate
+
+      - name: Run Rspec
+        run: bundle exec rspec
